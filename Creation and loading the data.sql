@@ -184,3 +184,16 @@ WITH (
    
 );
 
+--load data into User Activty--
+BULK INSERT lms.User_Activity
+FROM 'C:\Users\NAFISA SHAIK\OneDrive\Attachments\Desktop\LMS\Data\user_activity.csv'
+WITH (
+    FIRSTROW = 2,
+    FIELDTERMINATOR = ',',
+    ROWTERMINATOR = '0X0A'
+   
+);
+
+
+
+select * from lms.Assessment_Submissions
