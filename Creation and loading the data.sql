@@ -21,7 +21,7 @@ ALTER USER guest WITH DEFAULT_SCHEMA = lms;
 --creating the tables--
 --USers table--
 CREATE TABLE lms.Users (
-    user_id INT IDENTITY(1,1) PRIMARY KEY,
+    user_id INT PRIMARY KEY,
     user_name VARCHAR(100) NOT NULL,
     email VARCHAR(150) UNIQUE NOT NULL,
     role VARCHAR(20) CHECK (role IN ('student', 'instructor')),
@@ -44,7 +44,7 @@ GO
 
 --Lessons Table--
 CREATE TABLE lms.Lessons (
-    lesson_id INT IDENTITY(1,1) PRIMARY KEY,
+    lesson_id INT PRIMARY KEY,
     course_id INT NOT NULL,
     lesson_title VARCHAR(150) NOT NULL,
     lesson_order INT NOT NULL,
@@ -58,7 +58,7 @@ GO
 
 --Enrollments Table--
 CREATE TABLE lms.Enrollments (
-    enrollment_id INT IDENTITY(1,1) PRIMARY KEY,
+    enrollment_id INT PRIMARY KEY,
     user_id INT NOT NULL,
     course_id INT NOT NULL,
     status VARCHAR(20) CHECK (status IN ('active', 'inactive')),
@@ -78,7 +78,7 @@ GO
 
 --User Activity Table--
 CREATE TABLE lms.User_Activity (
-    activity_id INT IDENTITY(1,1) PRIMARY KEY,
+    activity_id INT PRIMARY KEY,
     user_id INT NOT NULL,
     lesson_id INT NOT NULL,
     activity_type VARCHAR(20) CHECK (activity_type IN ('START', 'COMPLETE')),
@@ -96,7 +96,7 @@ GO
 
 --Assessments Table--
 CREATE TABLE lms.Assessments (
-    assessment_id INT IDENTITY(1,1) PRIMARY KEY,
+    assessment_id INT PRIMARY KEY,
     course_id INT NOT NULL,
     assessment_title VARCHAR(150),
     max_score INT CHECK (max_score > 0),
@@ -109,7 +109,7 @@ GO
 
 --Assessment Submission table--
 CREATE TABLE lms.Assessment_Submissions (
-    submission_id INT IDENTITY(1,1) PRIMARY KEY,
+    submission_id INT PRIMARY KEY,
     assessment_id INT NOT NULL,
     user_id INT NOT NULL,
     score INT CHECK (score >= 0),
@@ -195,5 +195,11 @@ WITH (
 );
 
 
-
+select * from lms.Users
+select * from lms.Courses
+select * from lms.Lessons
+select * from lms.Enrollments
+select * from lms.Assessments
 select * from lms.Assessment_Submissions
+select * from lms.User_Activity
+
