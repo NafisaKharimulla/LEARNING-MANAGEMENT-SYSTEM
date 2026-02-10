@@ -80,9 +80,9 @@ SELECT
     a.course_id,
     s.user_id,
     SUM(s.score) AS total_score,
-    RANK() OVER (
-        PARTITION BY a.course_id
+    RANK() OVER (PARTITION BY a.course_id
         ORDER BY SUM(s.score) DESC
+        
     ) AS user_rank
 FROM lms.Assessment_Submissions s
 JOIN lms.Assessments a
@@ -90,4 +90,66 @@ JOIN lms.Assessments a
 GROUP BY
     a.course_id,
     s.user_id;
+
+--select * from lms.Lessons;
+
+ /* 17. Identify the first lesson accessed by each user for every course */
+SELECT
+    ua.user_id,
+    l.course_id,
+    MIN(ua.activity_time) AS first_access_time
+FROM lms.User_Activity ua
+JOIN lms.Lessons l
+    ON ua.lesson_id = l.lesson_id
+GROUP BY
+    ua.user_id,
+    l.course_id;
+ 
+/* 18.Find users with activity recorded on at least five consecutive days. */
+--SELECT *from lms.user_activity;
+
+SELECT
+    user_id
+FROM (
+    SELECT
+        user_id,
+        activity_date,
+        DATEDIFF(DAY, '2000-01-01', activity_date)
+        - ROW_NUMBER() OVER (
+            PARTITION BY user_id
+            ORDER BY activity_date
+        ) AS grp
+    FROM (
+        SELECT DISTINCT
+            user_id,
+            CAST(activity_time AS DATE) AS activity_date
+        FROM lms.User_Activity
+    ) d
+) x
+GROUP BY
+    user_id,
+    grp
+HAVING COUNT(*) >= 5;
+
+/* 19.Retrieve users who enrolled in a course but never submitted any assessment. */
+--SELECT * from lms.Enrollments
+--SELECT * from lms.Assessment_Submissions
+
+SELECT 
+    e.user_id,
+    e.course_id
+FROM lms.Enrollments e
+LEFT JOIN lms.Assessment_Submissions s
+ON e.user_id= s.user_id
+WHERE s.user_id IS NULL;
+
+/* 20. Courses where every enrolled user submitted at least one assessment */
+SELECT
+    e.course_id
+FROM lms.Enrollments e
+LEFT JOIN lms.Assessment_Submissions s
+    ON e.user_id = s.user_id
+GROUP BY
+    e.course_id
+HAVING COUNT(e.user_id) = COUNT(s.user_id);
 
